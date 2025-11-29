@@ -1,0 +1,1 @@
+- The generated code should not contain any redundant comments
