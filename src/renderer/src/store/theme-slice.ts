@@ -1,19 +1,15 @@
 import { immer } from 'zustand/middleware/immer'
+import { THEME } from '@renderer/constant/theme'
 
-export enum Theme {
-  Light = 'light',
-  Dark = 'dark',
-}
-
-export type ThemeSlice = {
-  theme: Theme
+export interface ThemeSlice {
+  theme: THEME
   toggleTheme: () => void
 }
 
 export const createThemeSlice = immer<ThemeSlice>((set) => ({
-  theme: Theme.Light,
+  theme: THEME.Light,
   toggleTheme: () =>
     set((state) => {
-      state.theme = state.theme === Theme.Light ? Theme.Dark : Theme.Light
+      state.theme = state.theme === THEME.Light ? THEME.Dark : THEME.Light
     }),
 }))

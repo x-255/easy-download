@@ -16,7 +16,7 @@ export default function ThemeIcon({ className }: ThemeIconProps) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn('size-5 text-black dark:text-white', className)}
+      className={cn('size-5 stroke-black dark:stroke-white', className)}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>

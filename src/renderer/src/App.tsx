@@ -1,24 +1,33 @@
 import logo from '@renderer/assets/logo.png'
+import DownloadModal, {
+  DownloadModalRef,
+} from '@renderer/components/download-modal'
 import ThemeIcon from '@renderer/components/theme-icon'
-import { ConfigProvider, theme as antdTheme } from 'antd'
-import { useEffect } from 'react'
-import { useAppStore } from './store'
-import { Theme } from './store/theme-slice'
+import { Button, ConfigProvider, theme as antdTheme } from 'antd'
+import { useEffect, useRef } from 'react'
+import { THEME } from './constant/theme'
 import DownloadList from './pages/download-list'
+import { useAppStore } from './store'
+import { ClearOutlined, PlusOutlined } from '@ant-design/icons'
 
 export default function App() {
   const theme = useAppStore((state) => state.theme)
   const toggleTheme = useAppStore((state) => state.toggleTheme)
-
   useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
+
+  const downloadFormRef = useRef<DownloadModalRef>(null)
+
+  const handleAddTask = () => {
+    downloadFormRef.current?.open()
+  }
 
   return (
     <ConfigProvider
       theme={{
         algorithm:
-          theme === Theme.Dark
+          theme === THEME.Dark
             ? antdTheme.darkAlgorithm
             : antdTheme.defaultAlgorithm,
       }}
@@ -27,7 +36,7 @@ export default function App() {
         className={`h-screen w-full overflow-y-auto bg-gray-50 dark:bg-gray-900`}
       >
         {/* header */}
-        <div className="flex items-center justify-between bg-white px-7 py-3 dark:bg-slate-800">
+        <div className="flex items-center justify-between bg-white px-50 py-3 dark:bg-slate-800">
           <div className="flex items-center gap-2 dark:text-white">
             <img src={logo} alt="logo" className="size-10 w-auto" />
             Easy Download
@@ -37,7 +46,19 @@ export default function App() {
           </div>
         </div>
 
+        <div className="flex justify-end gap-3 px-50 py-6">
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={handleAddTask}
+          >
+            添加任务
+          </Button>
+          <Button icon={<ClearOutlined />}>清空列表</Button>
+        </div>
+
         <DownloadList />
+        <DownloadModal ref={downloadFormRef} />
       </div>
     </ConfigProvider>
   )
