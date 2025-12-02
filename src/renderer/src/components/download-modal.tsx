@@ -44,6 +44,7 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
       title="新建下载任务"
       okText="开始下载"
       cancelText="取消"
+      centered
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}

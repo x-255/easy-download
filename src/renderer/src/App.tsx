@@ -1,3 +1,4 @@
+import { ClearOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import logo from '@renderer/assets/logo.png'
 import DownloadModal, {
   DownloadModalRef,
@@ -8,7 +9,7 @@ import { useEffect, useRef } from 'react'
 import { THEME } from './constant/theme'
 import DownloadList from './pages/download-list'
 import { useAppStore } from './store'
-import { ClearOutlined, PlusOutlined } from '@ant-design/icons'
+import SettingModal, { SettingModalRef } from './components/setting-modal'
 
 export default function App() {
   const theme = useAppStore((state) => state.theme)
@@ -17,10 +18,15 @@ export default function App() {
     document.documentElement.dataset.theme = theme
   }, [theme])
 
-  const downloadFormRef = useRef<DownloadModalRef>(null)
+  const downloadModalRef = useRef<DownloadModalRef>(null)
+  const settingModalRef = useRef<SettingModalRef>(null)
 
   const handleAddTask = () => {
-    downloadFormRef.current?.open()
+    downloadModalRef.current?.open()
+  }
+
+  const handleSetting = () => {
+    settingModalRef.current?.open()
   }
 
   return (
@@ -33,7 +39,7 @@ export default function App() {
       }}
     >
       <div
-        className={`h-screen w-full overflow-y-auto bg-gray-50 dark:bg-gray-900`}
+        className={`h-screen w-full overflow-y-auto bg-gray-50 pb-15 dark:bg-gray-900`}
       >
         {/* header */}
         <div className="flex items-center justify-between bg-white px-50 py-3 dark:bg-slate-800">
@@ -58,7 +64,16 @@ export default function App() {
         </div>
 
         <DownloadList />
-        <DownloadModal ref={downloadFormRef} />
+        <DownloadModal ref={downloadModalRef} />
+        <SettingModal ref={settingModalRef} />
+
+        <Button
+          className="fixed! right-15 bottom-10 z-1"
+          size="large"
+          shape="circle"
+          icon={<SettingOutlined />}
+          onClick={handleSetting}
+        ></Button>
       </div>
     </ConfigProvider>
   )

@@ -16,9 +16,9 @@ const CreateActionButton = ({
 }) => (
   <div
     className={cn(
-      'cursor-pointer rounded-sm p-1 hover:opacity-80',
+      'cursor-pointer rounded-sm p-1 hover:opacity-85',
       {
-        'cursor-not-allowed opacity-50': disabled,
+        'cursor-not-allowed opacity-60 hover:opacity-60': disabled,
       },
       className
     )}

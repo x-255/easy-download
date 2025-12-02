@@ -1,16 +1,16 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
-import { createThemeSlice, ThemeSlice } from './theme-slice'
 import { createDownloadSlice, DownloadSlice } from './download-slice'
+import { createSettingSlice, SettingSlice } from './setting-slice'
 
-type AppStore = ThemeSlice & DownloadSlice
+type AppStore = DownloadSlice & SettingSlice
 
 export const useAppStore = create<AppStore>()(
   devtools(
     persist(
       (...a) => ({
-        ...createThemeSlice(...a),
         ...createDownloadSlice(...a),
+        ...createSettingSlice(...a),
       }),
       {
         name: 'easy-store',

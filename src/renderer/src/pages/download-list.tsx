@@ -6,7 +6,7 @@ export default function DownloadList() {
 
   return (
     <>
-      <div className="space-y-2 px-50">
+      <div className="space-y-4 px-50">
         {downloadList.map((item) => (
           <DownloadRow key={item.id} {...item} />
         ))}

@@ -8,7 +8,7 @@ import {
 } from '@renderer/constant/download'
 import { formatBytes } from '@renderer/lib/utils'
 
-const ProgressLabel = ({
+const StatusLabel = ({
   filesize,
   downloadedSize,
   status,
@@ -30,11 +30,13 @@ export default function DownloadRow(props: DownloadItem) {
   const { url, filename, filesize, status, downloadedSize } = props
   const progress = filesize > 0 ? (downloadedSize / filesize) * 100 : 0
   return (
-    <div className="border-gray-400 bg-white p-6 text-gray-400 shadow-sm dark:bg-slate-800 dark:text-zinc-300">
+    <div className="rounded-lg border-gray-400 bg-white p-6 text-gray-600 shadow-sm dark:bg-slate-800 dark:text-zinc-300">
       {/* fileinfo & actions */}
       <div className="flex items-center justify-between">
         <div className="max-w-2/3 truncate">
-          <div className="text-xl font-bold">{filename}</div>
+          <div className="text-xl font-bold text-black dark:text-white">
+            {filename}
+          </div>
           <div>{url}</div>
         </div>
         <DownloadActions downloadItem={props} />
@@ -55,7 +57,7 @@ export default function DownloadRow(props: DownloadItem) {
 
       {/* size & status */}
       <div className="flex justify-between">
-        <ProgressLabel {...props} />
+        <StatusLabel {...props} />
       </div>
     </div>
   )
