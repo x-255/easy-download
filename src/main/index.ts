@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, session, dialog } from 'electron'
 import { join } from 'path'
 import { homedir } from 'os'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -36,6 +36,18 @@ function createWindow(): void {
   }
 }
 
+async function handleFileOpen() {
+  const mainWindow = BrowserWindow.getFocusedWindow() ?? ({} as BrowserWindow)
+  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory'],
+  })
+  if (!canceled) {
+    return filePaths[0]
+  } else {
+    return undefined
+  }
+}
+
 const reactDevToolsPath = join(
   homedir(),
   '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/7.0.1_0'
@@ -57,6 +69,7 @@ app.whenReady().then(async () => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.handle('dialog:openFile', handleFileOpen)
 
   createWindow()
 

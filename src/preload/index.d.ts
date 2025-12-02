@@ -5,6 +5,7 @@ declare global {
     electron: ElectronAPI
     api: {
       platform: NodeJS.Platform
+      openFile: () => Promise<string | undefined>
     }
   }
 }

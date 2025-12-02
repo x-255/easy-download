@@ -1,6 +1,14 @@
 import { useAppStore } from '@renderer/store'
 import { Setting } from '@renderer/store/setting-slice'
-import { Form, Input, InputNumber, Modal } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  InputProps,
+  Modal,
+  Space,
+} from 'antd'
 import { useImperativeHandle, useState } from 'react'
 
 export interface SettingModalRef {
@@ -38,6 +46,26 @@ export default function SettingModal({ ref }: SettingModalProps) {
     setIsOpen(false)
   }
 
+  const openFile = async () => {
+    const path = await window.api.openFile()
+    if (path) {
+      form.setFieldValue('storagePath', path)
+      console.log(
+        `form.getFieldValue('storagePath')====`,
+        form.getFieldValue('storagePath')
+      )
+    }
+  }
+
+  const FileInput = ({ ...props }: InputProps) => {
+    return (
+      <Space.Compact className="w-full">
+        <Input {...props} />
+        <Button onClick={openFile}>选择</Button>
+      </Space.Compact>
+    )
+  }
+
   return (
     <Modal
       title="新建下载任务"
@@ -50,7 +78,7 @@ export default function SettingModal({ ref }: SettingModalProps) {
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item label="下载目录" name="storagePath" required>
-          <Input />
+          <FileInput />
         </Form.Item>
         <Form.Item label="最大同时下载数" name="dlLimit" required>
           <InputNumber min={1} className="w-full!" />
