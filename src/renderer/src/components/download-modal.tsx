@@ -1,6 +1,6 @@
 import { useAppStore } from '@renderer/store'
-import { Form, Input, Modal } from 'antd'
-import { useImperativeHandle, useState } from 'react'
+import { Form, Input, InputRef, Modal } from 'antd'
+import { useImperativeHandle, useRef, useState } from 'react'
 
 export interface DownloadModalRef {
   open: () => void
@@ -22,6 +22,7 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
     },
   }))
 
+  const urlInputRef = useRef<InputRef>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [form] = Form.useForm<DownloadForm>()
   const addDownloadItem = useAppStore((state) => state.addDownloadItem)
@@ -39,6 +40,12 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
     addDownloadItem(values)
   }
 
+  const afterOpenChange = (open: boolean) => {
+    if (open) {
+      urlInputRef.current?.focus()
+    }
+  }
+
   return (
     <Modal
       title="新建下载任务"
@@ -48,10 +55,11 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
       open={isOpen}
       onOk={handleOk}
       onCancel={handleCancel}
+      afterOpenChange={afterOpenChange}
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item label="视频源" name="url" required>
-          <Input />
+          <Input ref={urlInputRef} />
         </Form.Item>
         <Form.Item label="文件名" name="filename">
           <Input />
