@@ -1,10 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, session, dialog } from 'electron'
-import { join } from 'path'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { homedir } from 'os'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
-function createWindow(): void {
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     show: false,
@@ -34,11 +34,12 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
-async function handleFileOpen() {
-  const mainWindow = BrowserWindow.getFocusedWindow() ?? ({} as BrowserWindow)
-  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+async function handleFileOpen(win: BrowserWindow) {
+  const { canceled, filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openDirectory'],
   })
   if (!canceled) {
@@ -48,10 +49,8 @@ async function handleFileOpen() {
   }
 }
 
-const reactDevToolsPath = join(
-  homedir(),
-  '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/7.0.1_0'
-)
+const reactDevToolsPath = 'fmkadmapgofadopljbjfkapdkoienihi/7.0.1_1'
+const reduxDevToolsPath = 'lmhkpmbekcpmknklioeibfkpmmfibljd/3.2.10_0'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -67,14 +66,29 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.handle('dialog:openFile', handleFileOpen)
+  const win = createWindow()
 
-  createWindow()
+  ipcMain.handle('dialog:openFile', () => handleFileOpen(win))
 
-  if (is.dev) {
-    await session.defaultSession.loadExtension(reactDevToolsPath)
+  try {
+    if (is.dev) {
+      const loadExtension = (path: string) =>
+        win.webContents.session.extensions.loadExtension(
+          join(
+            homedir(),
+            `/Library/Application Support/Google/Chrome/Default/Extensions/${path}`
+          ),
+          {
+            allowFileAccess: true,
+          }
+        )
+      await Promise.all([
+        loadExtension(reactDevToolsPath),
+        loadExtension(reduxDevToolsPath),
+      ])
+    }
+  } catch (error) {
+    console.error('Failed to load extensions:', error)
   }
 
   app.on('activate', function () {
