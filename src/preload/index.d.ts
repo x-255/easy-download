@@ -6,6 +6,7 @@ declare global {
     api: {
       platform: NodeJS.Platform
       openFile: () => Promise<string | undefined>
+      changeTheme: (theme: string) => void
     }
   }
 }

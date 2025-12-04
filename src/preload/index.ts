@@ -5,6 +5,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   platform: process.platform,
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
+  changeTheme: (theme: string) => ipcRenderer.send('theme:change', theme),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

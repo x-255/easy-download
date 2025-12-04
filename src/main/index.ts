@@ -1,8 +1,9 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import { homedir } from 'os'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import ipcListeners from './ipc-listeners'
 
 function createWindow() {
   // Create the browser window.
@@ -38,17 +39,6 @@ function createWindow() {
   return mainWindow
 }
 
-async function handleFileOpen(win: BrowserWindow) {
-  const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-    properties: ['openDirectory'],
-  })
-  if (!canceled) {
-    return filePaths[0]
-  } else {
-    return undefined
-  }
-}
-
 const reactDevToolsPath = 'fmkadmapgofadopljbjfkapdkoienihi/7.0.1_1'
 const reduxDevToolsPath = 'lmhkpmbekcpmknklioeibfkpmmfibljd/3.2.10_0'
 
@@ -68,7 +58,7 @@ app.whenReady().then(async () => {
 
   const win = createWindow()
 
-  ipcMain.handle('dialog:openFile', () => handleFileOpen(win))
+  ipcListeners(win)
 
   try {
     if (is.dev) {

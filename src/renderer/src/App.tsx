@@ -16,6 +16,7 @@ export default function App() {
   const toggleTheme = useAppStore((state) => state.toggleTheme)
   useEffect(() => {
     document.documentElement.dataset.theme = theme
+    window.api.changeTheme(theme)
   }, [theme])
 
   const downloadModalRef = useRef<DownloadModalRef>(null)
