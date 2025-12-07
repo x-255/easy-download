@@ -4,6 +4,7 @@ import { homedir } from 'os'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import ipcListeners from './ipc-listeners'
+import pie from 'puppeteer-in-electron'
 
 function createWindow() {
   // Create the browser window.
@@ -41,6 +42,9 @@ function createWindow() {
 
 const reactDevToolsPath = 'fmkadmapgofadopljbjfkapdkoienihi/7.0.1_1'
 const reduxDevToolsPath = 'lmhkpmbekcpmknklioeibfkpmmfibljd/3.2.10_0'
+
+// Initialize puppeteer-in-electron before app is ready
+pie.initialize(app)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

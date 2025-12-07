@@ -23,6 +23,7 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
   }))
 
   const urlInputRef = useRef<InputRef>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [form] = Form.useForm<DownloadForm>()
   const addDownloadItem = useAppStore((state) => state.addDownloadItem)
@@ -36,8 +37,19 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
     setIsOpen(false)
   }
 
-  const onFinish = (values: DownloadForm) => {
-    addDownloadItem(values)
+  const onFinish = async (values: DownloadForm) => {
+    setConfirmLoading(true)
+    if (values.url.includes('jable.tv')) {
+      const info = await window.api.parseJablePage(values.url)
+      addDownloadItem({
+        url: info.url,
+        filename: values.filename || info.filename,
+      })
+    } else {
+      addDownloadItem(values)
+    }
+    setConfirmLoading(false)
+    setIsOpen(false)
   }
 
   const afterOpenChange = (open: boolean) => {
@@ -53,6 +65,7 @@ export default function DownloadModal({ ref }: DownloadModalProps) {
       cancelText="取消"
       centered
       open={isOpen}
+      confirmLoading={confirmLoading}
       onOk={handleOk}
       onCancel={handleCancel}
       afterOpenChange={afterOpenChange}

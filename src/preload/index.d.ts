@@ -7,6 +7,9 @@ declare global {
       platform: NodeJS.Platform
       openFile: () => Promise<string | undefined>
       changeTheme: (theme: string) => void
+      parseJablePage: (
+        url: string
+      ) => Promise<{ filename: string; url: string }>
     }
   }
 }
